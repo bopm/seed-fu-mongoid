@@ -48,7 +48,7 @@ module SeedFuMongoid
 
       def document
         @doc ||= begin
-          @klass.find_by(constraint_search)
+          @klass.find_by(constraint_search) || @klass.new 
         rescue => e
           @klass.new
         end
@@ -58,9 +58,9 @@ module SeedFuMongoid
         return @constraint_search if @constraint_search
 
         @constraint_search = {}
-        constraints.each do |constraint|
+        @constraints.each do |constraint|
           if data[constraint]
-            @constraint_search[constraint] = proxy[constraint]
+            @constraint_search[constraint] = data[constraint]
           else
             raise ConstraintNotDefined.new(constraint)
           end
